@@ -2,6 +2,21 @@ use std::fs::{read_to_string, File};
 use std::io::prelude::*;
 
 fn main() -> Result<(), std::io::Error> {
+    fn multiply_by(multiple: u8) -> Box<dyn Fn(u8) -> u8> {
+        Box::new(move |value| multiple * value)
+    }
+    let multiply_by_two = multiply_by(2);
+    let result = (*multiply_by_two)(2);
+    println!("The result is: {}", result);
+
+    let add = |x: i8| move |y: i8| x + y;
+    let result_two = add(1)(3);
+    println!("The result is: {}", result_two);
+
+    //
+    //
+    //
+    //
     let todo_list_name: &'static str = "ma todo list";
 
     let todo_list: TodoList = TodoList::new(todo_list_name);
@@ -47,10 +62,11 @@ fn main() -> Result<(), std::io::Error> {
 
     let mut todo_list_with_complete = new_todo_list.add_a_todo(&new_found_todo);
 
-    let all_todo_complete = todo_list_with_complete.validate_all_todo();
+    let all_todo_complete = todo_list_with_complete.validate_all_todo_immutable();
 
     println!("{:?} all_todo_complete", all_todo_complete);
-    save_todo_list(&todo_list_with_complete)?;
+    // println!("{:?} todo_list_with_complete", todo_list_with_complete); // NOP
+    save_todo_list(&all_todo_complete)?;
 
     Ok(())
 }
@@ -105,6 +121,33 @@ impl TodoList {
         TodoList {
             name: self.name.clone(),
             todos: new_todos,
+        }
+    }
+
+    pub fn validate_all_todo_mutable(&mut self) {
+        self.todos
+            .iter_mut()//iter_mut renvoie des références mutables (&mut T)
+            .for_each(|todo| todo.set_complete()) //todo is mutably borrowed, so we can just set it complete in place
+        ;
+    }
+
+    // dans le cas "iter" tu vas parcourir une list de référence vers des valeurs ( sans les consommer )
+    // pareil avec iter_mut sauf que tu peux les modifier "in place"
+    // par contre into_iter consomme la structure sur laquelle tu l'appelle
+
+    pub fn validate_all_todo_immutable(self) -> Self {
+        TodoList {
+            name: self.name,
+            todos: self
+                .todos
+                //into_iter renvoie des item "owned" (T), là ou iter() renvoie des références immutables (&T)
+                .into_iter()
+                //todo here is allowed to be "owned" because "self" is consumed at the end of the function : it is "moved"
+                .map(|mut todo| {
+                    todo.set_complete();
+                    todo
+                })
+                .collect(),
         }
     }
 }
