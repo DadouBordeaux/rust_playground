@@ -16,26 +16,11 @@ fn test_count_from_zero_to_height_neighbours_with_cell_in_the_top_left() {
         assert_eq!(count_neighbours(&game, 0, 0), index)
     }
 }
-/*
-    Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-    Any live cell with two or three live neighbours lives on to the next generation.
-    Any live cell with more than three live neighbours dies, as if by overpopulation.
-    Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-*/
-
-pub fn neighbour_number(input: u8) -> Result<u8, &'static str> {
-    if POSSIBLE_NEIGHBOUR_NUMBER.contains(&input) {
-        Ok(input)
-    } else {
-        Err("C'est mal")
-    }
-}
 
 #[test]
 fn test_valid_neighbour_number() {
     let out_of_bound_neighbour_number = 9;
     let error = neighbour_number(out_of_bound_neighbour_number);
-
     assert!(error.is_err())
 }
 
@@ -55,40 +40,75 @@ fn test_underpopulation() {
         let cell_neighbourhood_state = neighbourhood_occupancy(neighbour_count);
         assert_eq!(cell_neighbourhood_state, NeighbourhoodOccupancy::Underpopulated);
     }
-
 }
 
 #[test]
-fn test_average_population() {
-    for i in 2..=3 {
-        let neighbour_count  = i;
-        let cell_neighbourhood_state = neighbourhood_occupancy(neighbour_count);
-        assert_eq!(cell_neighbourhood_state, NeighbourhoodOccupancy::Averagepopulated);
-    }
+fn test_survivable_population() {
 
+        let neighbour_count  = 2;
+        let cell_neighbourhood_state = neighbourhood_occupancy(neighbour_count);
+        assert_eq!(cell_neighbourhood_state, NeighbourhoodOccupancy::Survivable);
 }
 
+#[test]
+fn test_suitable_population() {
+        let neighbour_count= 3;
+        let cell_neighbourhood_state = neighbourhood_occupancy(neighbour_count);
+        assert_eq!(cell_neighbourhood_state, NeighbourhoodOccupancy::Suitable);
+}
+
+
+//TODO: use would be alive instead of would_survive or would reproduce
 #[test]
 fn test_cell_dont_survive_when_underpopulated_population() {
-
-    let is_surviving = would_survive(NeighbourhoodOccupancy::Underpopulated);
-    assert_eq!(is_surviving, false)
+    assert_eq!(
+        would_be_alive(true, NeighbourhoodOccupancy::Underpopulated),
+        false
+    );
+    assert_eq!(
+        would_be_alive(false, NeighbourhoodOccupancy::Underpopulated),
+        false
+    );
 }
 
 #[test]
 fn test_cell_dont_survive_when_overpopulated_population() {
-    let is_surviving = would_survive(NeighbourhoodOccupancy::Overpopulated);
+    assert_eq!(
+        would_be_alive(true, NeighbourhoodOccupancy::Overpopulated),
+        false
+    );
 
-    assert_eq!(is_surviving, false)
+    assert_eq!(
+        would_be_alive(true, NeighbourhoodOccupancy::Overpopulated),
+        false
+    );
 }
 
 #[test]
-fn test_cell_dont_survive_when_average_population() {
-    let is_surviving = would_survive(NeighbourhoodOccupancy::Averagepopulated);
+fn test_cell_dont_survive_when_survivable() {
+    assert_eq!(
+        would_be_alive(true, NeighbourhoodOccupancy::Survivable),
+        true
+    );
 
-    assert_eq!(is_surviving, true)
+    assert_eq!(
+        would_be_alive(false, NeighbourhoodOccupancy::Survivable),
+        false
+    );
 }
 
+#[test]
+fn test_cell_dont_survive_when_suitable() {
+    assert_eq!(
+        would_be_alive(true, NeighbourhoodOccupancy::Suitable),
+        true
+    );
+
+    assert_eq!(
+        would_be_alive(false, NeighbourhoodOccupancy::Suitable),
+        true
+    );
+}
 
 #[test]
 fn test_count_from_zero_to_height_neighbours_with_cell_in_the_middle() {
@@ -172,3 +192,15 @@ fn test_count_from_zero_to_height_neighbours_with_cell_in_the_middle() {
         assert_eq!(count_neighbours(&game, 1, 1), expected_neighbours_number)
     }
 }
+
+
+
+// #[test]
+// fn test_is_reproducing() {
+//
+//     let neighbourhood_occupancy = NeighbourhoodOccupancy::Averagepopulated;
+//
+//     let is_reproducing = would_reproduce(neighbourhood_occupancy);
+//
+//     assert_eq!(is_reproducing, true)
+// }
