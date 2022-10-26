@@ -3,8 +3,6 @@ mod test;
 
 use std::ops::{ RangeInclusive};
 
-const POSSIBLE_NEIGHBOUR_NUMBER: RangeInclusive<u8> = 0..=8;
-
 struct ConwayGameOfLife {
     /// The current state of the game
     state: Vec<Vec<Cell>>,
@@ -62,7 +60,7 @@ fn generation(game: ConwayGameOfLife) -> ConwayGameOfLife {
             .map(|(y, cell)|
                 cell.would_be_alive(
                     neighbourhood_occupancy(
-                        count_neighbours(&game, x, y) as u8)
+                        count_neighbours(&game, x, y) as u8
                     )
                 )
             )
@@ -85,13 +83,12 @@ fn count_neighbours(game: &ConwayGameOfLife, x: usize, y: usize) -> usize {
 
 fn neighbourhood_occupancy(neighbours_number: u8) -> NeighbourhoodOccupancy {
     use NeighbourhoodOccupancy::*;
-    let max = POSSIBLE_NEIGHBOUR_NUMBER.last().unwrap();
     match neighbours_number {
         0..=1 => Underpopulated,
         2 => Survivable,
         3 => Suitable,
-        4..max => Overpopulated,
-        _ => Overpopulated
+        4..=8 => Overpopulated,
+        _ => panic!("A cell should never have more than 8 neighbours !")
     }
 }
 

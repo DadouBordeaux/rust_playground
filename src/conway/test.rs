@@ -18,16 +18,9 @@ fn test_count_from_zero_to_height_neighbours_with_cell_in_the_top_left() {
 }
 
 #[test]
-fn test_valid_neighbour_number() {
-    let out_of_bound_neighbour_number = 9;
-    let error = neighbour_number(out_of_bound_neighbour_number);
-    assert!(error.is_err())
-}
-
-#[test]
 fn test_overpopulation() {
     for i in 4..=8 {
-        let neighbour_count= neighbour_number(i).unwrap();
+        let neighbour_count= i;
         let cell_neighbourhood_state = neighbourhood_occupancy(neighbour_count);
         assert!(matches!(cell_neighbourhood_state, NeighbourhoodOccupancy::Overpopulated));
     }
