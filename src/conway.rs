@@ -5,16 +5,42 @@ use std::ops::{ RangeInclusive};
 
 struct ConwayGameOfLife {
     /// The current state of the game
+    ///
     state: Vec<Vec<Cell>>,
 }
 
+//TODO test generation
+//TODO Display
+//TODO Generic Output Display
+//TODO Game loop
+//TODO Error Management
+//TODO Handle negative positions
+
 impl ConwayGameOfLife {
-    fn new(state: Vec<Vec<Cell>>) -> Self {
-        ConwayGameOfLife { state }
+    // #[cfg(test)]
+    // fn new(state: Vec<Vec<Cell>>) -> Self {
+    //     ConwayGameOfLife { state }
+    // }
+
+    fn with_alive_cell(mut self, position: (usize, usize)) -> Self  {
+        self.state[position.0][position.1] = Cell::Alive;
+        self
     }
 
     fn get_cell(&self, x: usize, y: usize) -> &Cell {
         &self.state[y][x]
+    }
+}
+
+impl Default for ConwayGameOfLife {
+    fn default() -> Self {
+        ConwayGameOfLife {
+            state: vec![
+                vec![Cell::Dead, Cell::Dead, Cell::Dead],
+                vec![Cell::Dead, Cell::Dead, Cell::Dead],
+                vec![Cell::Dead, Cell::Dead, Cell::Dead],
+            ]
+        }
     }
 }
 
@@ -67,7 +93,7 @@ fn generation(game: ConwayGameOfLife) -> ConwayGameOfLife {
             .collect::<Vec<Cell>>()
     });
 
-    ConwayGameOfLife::new(new_state.collect())
+    ConwayGameOfLife { state: new_state.collect() }
 }
 
 fn count_neighbours(game: &ConwayGameOfLife, x: usize, y: usize) -> usize {

@@ -2,19 +2,9 @@
 
 #[test]
 fn test_count_from_zero_to_height_neighbours_with_cell_in_the_top_left() {
-    let all_test = vec![
-        vec![
-            vec![Cell::Alive, Cell::Dead, Cell::Dead],
-            vec![Cell::Dead, Cell::Dead, Cell::Dead],
-            vec![Cell::Dead, Cell::Dead, Cell::Dead],
-        ],
-    ];
-
-    for (index, matrix) in all_test.into_iter().enumerate() {
-        let game = ConwayGameOfLife::new(matrix);
-        eprintln!("index {}", index);
-        assert!(matches!(count_neighbours(&game, 0, 0), index)   )
-    }
+    let game = ConwayGameOfLife::default();
+    let game = game.with_alive_cell((0, 0));
+    assert_eq!(count_neighbours(&game, 1, 1), 1)
 }
 
 #[test]
@@ -121,80 +111,68 @@ fn test_count_from_zero_to_height_neighbours_with_cell_in_the_middle() {
     let all_test = vec![
         (
             0,
-            vec![
-                vec![Cell::Dead, Cell::Dead, Cell::Dead],
-                vec![Cell::Dead, Cell::Alive, Cell::Dead],
-                vec![Cell::Dead, Cell::Dead, Cell::Dead],
-            ]
+            ConwayGameOfLife::default()
+                .with_alive_cell((1, 1))
         ),
         (
             1,
-            vec![
-                vec![Cell::Alive, Cell::Dead, Cell::Dead],
-                vec![Cell::Dead, Cell::Alive, Cell::Dead],
-                vec![Cell::Dead, Cell::Dead, Cell::Dead],
-            ]
+            ConwayGameOfLife::default()
+                .with_alive_cell((1, 1))
+                .with_alive_cell((0, 0))
         ),
         (
             2,
-            vec![
-                vec![Cell::Alive, Cell::Dead, Cell::Dead],
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-                vec![Cell::Dead, Cell::Dead, Cell::Dead],
-            ]
+            ConwayGameOfLife::default()
+                .with_alive_cell((0, 0))
+                .with_alive_cell((0, 1)).with_alive_cell((1, 1))
         ),
         (
             3,
-            vec![
-                vec![Cell::Alive, Cell::Dead, Cell::Dead],
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-                vec![Cell::Alive, Cell::Dead, Cell::Dead],
-            ],
+            ConwayGameOfLife::default()
+                .with_alive_cell((0, 0))
+                .with_alive_cell((0, 1)).with_alive_cell((1, 1))
+                .with_alive_cell((0, 2))
         ),
         (
             4,
-            vec![
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-                vec![Cell::Alive, Cell::Dead, Cell::Dead],
-            ]
+            ConwayGameOfLife::default()
+                .with_alive_cell((0, 0)).with_alive_cell((1, 0))
+                .with_alive_cell((0, 1)).with_alive_cell((1, 1))
+                .with_alive_cell((0, 2))
+
         ),
         (
             5,
-            vec![
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-            ]
+            ConwayGameOfLife::default()
+                .with_alive_cell((0, 0)).with_alive_cell((1, 0))
+                .with_alive_cell((0, 1)).with_alive_cell((1, 1))
+                .with_alive_cell((0, 2)).with_alive_cell((1, 2))
         ),
         (
             6,
-            vec![
-                vec![Cell::Alive, Cell::Alive, Cell::Alive],
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-            ]
+            ConwayGameOfLife::default()
+                .with_alive_cell((0, 0)).with_alive_cell((1, 0)).with_alive_cell((2, 0))
+                .with_alive_cell((0, 1)).with_alive_cell((1, 1))
+                .with_alive_cell((0, 2)).with_alive_cell((1, 2))
         ),
         (
             7,
-            vec![
-                vec![Cell::Alive, Cell::Alive, Cell::Alive],
-                vec![Cell::Alive, Cell::Alive, Cell::Alive],
-                vec![Cell::Alive, Cell::Alive, Cell::Dead],
-            ],
+            ConwayGameOfLife::default()
+                .with_alive_cell((0, 0)).with_alive_cell((1, 0)).with_alive_cell((2, 0))
+                .with_alive_cell((0, 1)).with_alive_cell((1, 1)).with_alive_cell((2, 1))
+                .with_alive_cell((0, 2)).with_alive_cell((1, 2))
         ),
         (
             8,
-            vec![
-                vec![Cell::Alive, Cell::Alive, Cell::Alive],
-                vec![Cell::Alive, Cell::Alive, Cell::Alive],
-                vec![Cell::Alive, Cell::Alive, Cell::Alive],
-            ]
-        )
+            ConwayGameOfLife::default()
+                .with_alive_cell((0, 0)).with_alive_cell((1, 0)).with_alive_cell((2, 0))
+                .with_alive_cell((0, 1)).with_alive_cell((1, 1)).with_alive_cell((2, 1))
+                .with_alive_cell((0, 2)).with_alive_cell((1, 2)).with_alive_cell((2, 2))
+        ),
     ];
 
-    for (expected_neighbours_number, matrix) in all_test.into_iter() {
-        let game = ConwayGameOfLife::new(matrix);
+    for (expected_neighbours_number, game) in all_test.into_iter() {
+
         assert_eq!(count_neighbours(&game, 1, 1), expected_neighbours_number)
     }
 }
