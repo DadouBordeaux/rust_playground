@@ -94,6 +94,7 @@ enum NeighbourhoodOccupancy {
     Suitable,
 }
 
+//TODO next time : wipe all, TDD all cases, handle the upper bounds cases ( map positive limits )
 fn neighbour_position(x: usize, y: usize) -> Vec<(usize, usize)> {
     if x == 0 && y == 0 {
         vec![(x + 1, y), (x + 1, y + 1), (x, y + 1)]
