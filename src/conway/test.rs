@@ -4,7 +4,8 @@
 fn test_count_from_zero_to_height_neighbours_with_cell_in_the_top_left() {
     let game = ConwayGameOfLife::default();
     let game = game.with_alive_cell((0, 0));
-    assert_eq!(count_neighbours(&game, 1, 1), 1)
+    assert_eq!(count_neighbours(&game, 1, 1), 1);
+    assert_eq!(count_neighbours(&game, 0, 1), 1);
 }
 
 #[test]
@@ -168,11 +169,27 @@ fn test_count_from_zero_to_height_neighbours_with_cell_in_the_middle() {
                 .with_alive_cell((0, 0)).with_alive_cell((1, 0)).with_alive_cell((2, 0))
                 .with_alive_cell((0, 1)).with_alive_cell((1, 1)).with_alive_cell((2, 1))
                 .with_alive_cell((0, 2)).with_alive_cell((1, 2)).with_alive_cell((2, 2))
-        ),
+        )
     ];
 
     for (expected_neighbours_number, game) in all_test.into_iter() {
-
         assert_eq!(count_neighbours(&game, 1, 1), expected_neighbours_number)
     }
 }
+
+
+
+ // #[test]
+ // fn test_generation() {
+ // //     given
+ //     let state_one = ConwayGameOfLife::square(5).with_alive_cell((1, 0)).with_alive_cell((1,1)).with_alive_cell((1, 2));
+ //     // let state_two = ConwayGameOfLife::default().with_alive_cell((0, 1)).with_alive_cell((1,1)).with_alive_cell((2, 2));
+ //     // state_one != state_two;
+ //     // conway.with_alive_cell((1, 0)).with_alive_cell((1,1)).with_alive_cell((1, 2));
+ //
+ // //     exectute
+ //     let state_two = state_one.next();
+ //
+ //     assert!(matches!(state_two.get_cell(1, 0), Cell::Dead));
+ //
+ // }
